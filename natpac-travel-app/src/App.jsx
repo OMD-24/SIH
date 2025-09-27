@@ -1,5 +1,5 @@
-import NATPACTravelApp from "./NATPACTravelAPP";
+import NATPACTravelAPP from "./NATPACTravelAPP";
 
 export default function App() {
-  return <NATPACTravelApp />;
+  return <NATPACTravelAPP />;
 }
