@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   MapPin,
   Navigation,
@@ -26,34 +26,16 @@ import {
   Phone,
   Mail,
   Shield,
+  Send,
 } from "lucide-react";
 
 const NATPACTravelApp = () => {
-  const [currentView, setCurrentView] = useState("home");
-  const [previousView, setPreviousView] = useState(null);
+  const [currentView, setCurrentView] = useState("start");
   const [isTracking, setIsTracking] = useState(false);
-  const [currentTrip, setCurrentTrip] = useState(null);
   const [trips, setTrips] = useState([]);
-  const [user, setUser] = useState({ id: "u_demo", name: "Demo User" });
+  const [user] = useState({ id: "u_demo", name: "Demo User" });
   const [showMenu, setShowMenu] = useState(false);
 
-  // Navigation function with back button support
-  const navigateTo = (newView) => {
-    setPreviousView(currentView);
-    setCurrentView(newView);
-    setShowMenu(false);
-  };
-
-  const goBack = () => {
-    if (previousView) {
-      setCurrentView(previousView);
-      setPreviousView(null);
-    } else {
-      setCurrentView("home");
-    }
-  };
-
-  // Sample trip data
   const sampleTrips = [
     {
       id: "1",
@@ -89,49 +71,133 @@ const NATPACTravelApp = () => {
     setTrips(sampleTrips);
   }, []);
 
-  // Header Component with back button
-  const Header = ({ title, logo, showBack = true }) => (
-    <div className="flex items-center justify-between p-4 bg-white shadow-sm border-b border-gray-100">
-      <div className="flex items-center space-x-3">
-        {showBack && previousView && (
-          <button
-            onClick={goBack}
-            className="p-2 hover:bg-gray-100 rounded-full transition-all"
-          >
-            <ArrowLeft size={20} className="text-gray-600" />
-          </button>
-        )}
-        {logo && <img src={logo} alt="App Logo" className="h-15 w-auto" />}
-        {title && !logo && (
-          <h1 className="text-xl font-bold text-gray-800">{title}</h1>
-        )}
-        {title && logo && (
-          <h1 className="text-xl font-bold text-gray-800">{title}</h1>
-        )}
-      </div>
-      <button
-        onClick={() => setShowMenu(!showMenu)}
-        className="p-2 hover:bg-gray-100 rounded-full transition-all"
-      >
-        <Menu size={20} className="text-gray-600" />
-      </button>
+  const navigateTo = useCallback((newView) => {
+    setCurrentView(newView);
+    setShowMenu(false);
+  }, []);
+
+  const goBack = useCallback(() => {
+    if (currentView === "home" || currentView === "dashboard") {
+      setCurrentView("start");
+    } else if (currentView !== "start") {
+      setCurrentView("home");
+    }
+  }, [currentView]);
+
+  const handleMenuNavigation = (view) => {
+    setShowMenu(false);
+    navigateTo(view);
+  };
+
+  const NATPAC_ICON = () => (
+    <div className="flex items-center space-x-2">
+      <img src="/tripxlogo.png" alt="TripX Logo" className="h-15 w-auto" />
     </div>
   );
 
-  // Side Menu Component
+  const Header = ({ title, showBack = true }) => {
+    const isInternalPage =
+      currentView !== "home" &&
+      currentView !== "dashboard" &&
+      currentView !== "start";
+
+    const BackButtonPlaceholder = isInternalPage ? (
+      <button
+        onClick={goBack}
+        className="p-2 hover:bg-gray-100 rounded-full transition-all"
+      >
+        <ArrowLeft size={20} className="text-gray-600" />
+      </button>
+    ) : (
+      <div className="w-10"></div>
+    );
+
+    const MenuButtonPlaceholder =
+      currentView !== "start" && currentView !== "dashboard" ? (
+        <button
+          onClick={() => setShowMenu(!showMenu)}
+          className="p-2 hover:bg-gray-100 rounded-full transition-all"
+        >
+          <Menu size={20} className="text-gray-600" />
+        </button>
+      ) : (
+        <div className="w-10"></div>
+      );
+
+    return (
+      <div className="flex items-center justify-between p-4 bg-white shadow-md border-b border-gray-100 sticky top-0 z-40">
+        {BackButtonPlaceholder}
+
+        <div className="flex-1 flex justify-center absolute left-0 right-0">
+          {title ? (
+            <h1 className="text-xl font-extrabold text-gray-900">{title}</h1>
+          ) : (
+            <NATPAC_ICON />
+          )}
+        </div>
+
+        {MenuButtonPlaceholder}
+      </div>
+    );
+  };
+
+  const BottomNavBar = ({ currentView, navigateTo }) => {
+    const getActiveView = () => {
+      if (["addTrip", "booking", "expenses", "privacy"].includes(currentView)) {
+        return "home";
+      }
+      if (currentView === "bestRoute") return "bestRoute";
+      if (currentView === "trips") return "trips";
+      if (currentView === "settings") return "settings";
+      return currentView;
+    };
+
+    const activeView = getActiveView();
+
+    const navItems = [
+      { icon: Home, label: "Home", view: "home" },
+      { icon: Route, label: "Routes", view: "bestRoute" },
+      { icon: BarChart3, label: "Trips", view: "trips" },
+      { icon: Settings, label: "Settings", view: "settings" },
+    ];
+
+    return (
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-40">
+        <div className="flex justify-around py-3 max-w-md mx-auto">
+          {navItems.map((tab, index) => (
+            <button
+              key={index}
+              onClick={() => navigateTo(tab.view)}
+              className={`flex flex-col items-center space-y-1 p-2 rounded-xl transition-all ${
+                activeView === tab.view
+                  ? "text-blue-600 bg-blue-50 shadow-inner"
+                  : "text-gray-500 hover:text-blue-500"
+              }`}
+            >
+              <tab.icon size={22} />
+              <span className="text-xs font-semibold">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const SideMenu = () => (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity ${
+      className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
         showMenu ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
+      onClick={() => setShowMenu(false)}
     >
       <div
-        className={`fixed right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform ${
+        className={`fixed right-0 top-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 ${
           showMenu ? "translate-x-0" : "translate-x-full"
         }`}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800">Menu</h2>
             <button
               onClick={() => setShowMenu(false)}
@@ -146,158 +212,222 @@ const NATPACTravelApp = () => {
               { icon: Home, label: "Home", view: "home" },
               { icon: MapPin, label: "Add Trip", view: "addTrip" },
               { icon: Route, label: "Best Routes", view: "bestRoute" },
-              { icon: Hotel, label: "Booking", view: "booking" },
+              { icon: Hotel, label: "Bookings", view: "booking" },
               { icon: BarChart3, label: "My Trips", view: "trips" },
               { icon: Wallet, label: "Expenses", view: "expenses" },
-              { icon: Settings, label: "Settings", view: "settings" },
-              { icon: Shield, label: "Privacy", view: "privacy" },
             ].map((item, index) => (
               <button
                 key={index}
-                onClick={() => navigateTo(item.view)}
-                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-all text-left"
+                onClick={() => handleMenuNavigation(item.view)}
+                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-blue-50 transition-all text-left text-lg"
               >
-                <item.icon size={20} className="text-gray-600" />
-                <span className="font-medium text-gray-700">{item.label}</span>
+                <item.icon size={22} className="text-blue-600" />
+                <span className="font-semibold text-gray-700">
+                  {item.label}
+                </span>
               </button>
             ))}
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Shield size={16} />
-              <span>Your data is secure with NATPAC</span>
-            </div>
+          <div className="mt-8 pt-6 border-t border-gray-200 space-y-2">
+            <button
+              onClick={() => handleMenuNavigation("settings")}
+              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-all text-left"
+            >
+              <Settings size={20} className="text-gray-600" />
+              <span className="font-medium text-gray-700">Settings</span>
+            </button>
+            <button
+              onClick={() => handleMenuNavigation("start")}
+              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-red-50 transition-all text-left"
+            >
+              <ArrowLeft size={20} className="text-red-600 rotate-180" />
+              <span className="font-medium text-red-600">Switch/Exit</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 
-  // Home Screen Component
-  const HomeScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <Header logo="/tripxlogo.png" showBack={false} />
+  const StartScreen = ({ navigateTo }) => (
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-indigo-700 via-blue-800 to-purple-900 text-white">
+      <div className="text-center mb-12">
+        <img
+          src="/tripxlogo.png"
+          alt="TripX Logo"
+          className="w-20 h-auto mx-auto mb-4"
+        />
 
-      <div className="p-4 pb-24">
+        <h1 className="text-4xl font-extrabold mb-2 tracking-tight">
+          TripX :- Travel Made Effortless...
+        </h1>
+        <p className="text-lg font-light opacity-80">
+          Kerala's Comprehensive Travel & Planning App
+        </p>
+      </div>
+
+      <div className="w-full max-w-sm space-y-6">
+        <h2 className="text-2xl font-bold text-center">Select Your Role</h2>
+
+        <button
+          onClick={() => navigateTo("home")}
+          className="w-full flex items-center justify-center space-x-3 py-4 px-6 bg-white text-gray-900 rounded-2xl font-bold text-lg shadow-xl transition-all hover:ring-4 hover:ring-blue-300 hover:scale-[1.02]"
+        >
+          <MapPin size={24} className="text-blue-600" />
+          <span>User App (Trip Logging)</span>
+        </button>
+
+        <button
+          onClick={() => navigateTo("dashboard")}
+          className="w-full flex items-center justify-center space-x-3 py-4 px-6 bg-green-500 text-white rounded-2xl font-bold text-lg shadow-xl transition-all hover:ring-4 hover:ring-green-300 hover:scale-[1.02]"
+        >
+          <BarChart3 size={24} className="text-white" />
+          <span>NATPAC Dashboard</span>
+        </button>
+      </div>
+
+      <div className="mt-12 text-center text-sm opacity-70">
+        <p>National Transportation Planning and Research Centre (NATPAC)</p>
+      </div>
+    </div>
+  );
+
+  const HomeScreen = () => (
+    <div className="min-h-screen bg-gray-50">
+      <Header title="" showBack={false} />
+      <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          {/* Welcome Card */}
-          <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg border border-gray-100">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                <MapPin className="text-white" size={24} />
+          <div className="bg-white rounded-3xl p-6 mb-6 shadow-xl border-t-4 border-blue-500">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <MapPin className="text-blue-600" size={24} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Hello, {user.name.split(" ")[0]}!
+                  </h2>
+                  <p className="text-gray-600 text-sm">
+                    Let's record your next journey.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-bold text-gray-800">
-                  Welcome Back!
-                </h2>
-                <p className="text-gray-600 text-sm">
-                  Contributing to Kerala's future
-                </p>
-              </div>
+              <button
+                onClick={() => navigateTo("settings")}
+                className="p-2 bg-gray-50 rounded-full hover:bg-gray-100"
+              >
+                <Settings size={20} className="text-gray-600" />
+              </button>
             </div>
           </div>
 
-          {/* Tracking Status */}
-          <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 mb-6 shadow-xl border border-gray-100">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="text-xl font-semibold text-gray-800">
                 Trip Tracking
               </h3>
               <div
-                className={`w-4 h-4 rounded-full ${
-                  isTracking ? "bg-green-500 animate-pulse" : "bg-gray-300"
+                className={`w-3 h-3 rounded-full ${
+                  isTracking ? "bg-green-500 animate-pulse" : "bg-gray-400"
                 }`}
               ></div>
             </div>
 
             <button
               onClick={() => setIsTracking(!isTracking)}
-              className={`w-full py-4 px-6 rounded-2xl font-semibold text-white transition-all transform hover:scale-105 ${
+              className={`w-full py-4 px-6 rounded-2xl font-bold text-white transition-all transform hover:shadow-lg ${
                 isTracking
                   ? "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
                   : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
               }`}
             >
-              <div className="flex items-center justify-center space-x-2">
+              <div className="flex items-center justify-center space-x-3">
                 {isTracking ? <Pause size={20} /> : <Play size={20} />}
-                <span>{isTracking ? "Stop Tracking" : "Start Tracking"}</span>
+                <span>
+                  {isTracking ? "Stop & Save Trip" : "Start Auto Tracking"}
+                </span>
               </div>
             </button>
 
             {isTracking && (
-              <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-100">
-                <p className="text-green-800 font-medium">🛰️ Tracking active</p>
-                <p className="text-green-600 text-sm">
-                  Your trip will be recorded automatically
+              <div className="mt-4 p-4 bg-green-50 rounded-2xl border border-green-200">
+                <p className="text-green-800 font-medium flex items-center space-x-2">
+                  <Clock size={18} /> <span>Live Tracking Active...</span>
                 </p>
               </div>
             )}
           </div>
 
-          {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             {[
               {
                 icon: MapPin,
-                label: "Add Trip",
+                label: "Manual Add",
                 color: "blue",
                 view: "addTrip",
+                iconBg: "bg-blue-100 text-blue-600",
               },
               {
                 icon: Route,
-                label: "Best Route",
+                label: "Find Route",
                 color: "green",
                 view: "bestRoute",
+                iconBg: "bg-green-100 text-green-600",
               },
               {
                 icon: Hotel,
-                label: "Book Stay",
+                label: "Bookings",
                 color: "purple",
                 view: "booking",
+                iconBg: "bg-purple-100 text-purple-600",
               },
               {
                 icon: BarChart3,
                 label: "My Trips",
                 color: "orange",
                 view: "trips",
+                iconBg: "bg-orange-100 text-orange-600",
               },
             ].map((action, index) => (
               <button
                 key={index}
                 onClick={() => navigateTo(action.view)}
-                className="bg-white p-6 rounded-3xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border border-gray-100"
+                className="bg-white p-5 rounded-3xl shadow-lg hover:shadow-xl transition-all transform hover:translate-y-[-2px] border border-gray-100 text-left"
               >
-                <action.icon
-                  className={`w-8 h-8 text-${action.color}-500 mb-3 mx-auto`}
-                />
-                <p className="font-semibold text-gray-800 text-sm">
+                <div
+                  className={`w-10 h-10 ${action.iconBg} rounded-xl flex items-center justify-center mb-3`}
+                >
+                  <action.icon size={20} />
+                </div>
+                <p className="font-bold text-gray-800 text-base">
                   {action.label}
                 </p>
               </button>
             ))}
           </div>
 
-          {/* Recent Activity */}
           {trips.length > 0 && (
-            <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Recent Trips
+            <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Recent Activity
               </h3>
               <div className="space-y-3">
                 {trips.slice(0, 2).map((trip, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl"
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors"
                   >
                     <div>
-                      <p className="font-medium text-gray-800">
+                      <p className="font-semibold text-gray-800">
                         {trip.origin.name.split(",")[0]} →{" "}
                         {trip.destination.name.split(",")[0]}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {trip.mode.replace("PT_", "").replace("_", " ")} • ₹
-                        {trip.cost} •{" "}
+                      <p className="text-sm text-gray-600 mt-1">
+                        <span className="font-medium text-blue-600">
+                          {trip.mode.replace("PT_", "").replace("_", " ")}
+                        </span>{" "}
+                        • ₹{trip.cost} •{" "}
                         {Math.round((trip.distance / 1000) * 10) / 10} km
                       </p>
                     </div>
@@ -305,47 +435,26 @@ const NATPACTravelApp = () => {
                   </div>
                 ))}
               </div>
+              <button
+                onClick={() => navigateTo("trips")}
+                className="w-full mt-4 py-2 text-blue-600 font-semibold border-t border-gray-100 pt-4 hover:text-blue-700"
+              >
+                View All Trips
+              </button>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
-        <div className="flex justify-around py-3 max-w-md mx-auto">
-          {[
-            { icon: Home, label: "Home", view: "home" },
-            { icon: Route, label: "Routes", view: "bestRoute" },
-            { icon: BarChart3, label: "Trips", view: "trips" },
-            { icon: Settings, label: "Settings", view: "settings" },
-          ].map((tab, index) => (
-            <button
-              key={index}
-              onClick={() => navigateTo(tab.view)}
-              className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-all ${
-                currentView === tab.view
-                  ? "text-blue-500 bg-blue-50"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              <tab.icon size={20} />
-              <span className="text-xs font-medium">{tab.label}</span>
-            </button>
-          ))}
         </div>
       </div>
     </div>
   );
 
-  // Trip Confirmation Component
   const TripConfirmation = () => (
     <div className="min-h-screen bg-gray-50">
-      <Header title="Confirm Your Trip" />
+      <Header title="Confirm Trip" />
 
-      <div className="p-4 pb-24">
+      <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
-            {/* Trip Map Preview */}
             <div className="bg-gradient-to-br from-blue-100 to-indigo-200 rounded-2xl h-48 mb-6 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"></div>
               <div className="relative z-10 text-center">
@@ -355,7 +464,6 @@ const NATPACTravelApp = () => {
               </div>
             </div>
 
-            {/* Trip Details Form */}
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -466,12 +574,10 @@ const NATPACTravelApp = () => {
     </div>
   );
 
-  // Best Route Screen
   const BestRouteScreen = () => (
     <div className="min-h-screen bg-gray-50">
-      <Header title="Find Best Route" />
-
-      <div className="p-4 pb-24">
+      <Header title="Find Route" />
+      <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 mb-6">
             <div className="space-y-4 mb-6">
@@ -515,7 +621,6 @@ const NATPACTravelApp = () => {
             </button>
           </div>
 
-          {/* Route Options */}
           <div className="space-y-4">
             {[
               {
@@ -595,12 +700,11 @@ const NATPACTravelApp = () => {
     </div>
   );
 
-  // Booking Screen
   const BookingScreen = () => (
     <div className="min-h-screen bg-gray-50">
-      <Header title="Book Travel & Stay" />
+      <Header title="Bookings" />
 
-      <div className="p-4 pb-24">
+      <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 mb-6">
             <h3 className="text-xl font-semibold text-gray-800 mb-6">
@@ -623,7 +727,6 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          {/* Popular Options */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Popular Bookings
@@ -702,14 +805,12 @@ const NATPACTravelApp = () => {
     </div>
   );
 
-  // My Trips Screen
   const TripsScreen = () => (
     <div className="min-h-screen bg-gray-50">
       <Header title="My Trips" />
 
-      <div className="p-4 pb-24">
+      <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          {/* Trip Stats */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 mb-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               This Month
@@ -732,7 +833,6 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          {/* Trip List */}
           <div className="space-y-4">
             {trips.map((trip, index) => (
               <div
@@ -783,14 +883,12 @@ const NATPACTravelApp = () => {
     </div>
   );
 
-  // Settings Screen
   const SettingsScreen = () => (
     <div className="min-h-screen bg-gray-50">
       <Header title="Settings" />
 
-      <div className="p-4 pb-24">
+      <div className="p-4 pb-28">
         <div className="max-w-md mx-auto space-y-4">
-          {/* Profile Section */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Profile
@@ -806,7 +904,6 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          {/* Privacy & Data */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Privacy & Data
@@ -842,7 +939,6 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          {/* App Settings */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               App Settings
@@ -874,7 +970,6 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          {/* Support */}
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Support
@@ -911,12 +1006,11 @@ const NATPACTravelApp = () => {
     </div>
   );
 
-  // Privacy Screen
   const PrivacyScreen = () => (
     <div className="min-h-screen bg-gray-50">
       <Header title="Privacy Policy" />
 
-      <div className="p-4 pb-24">
+      <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
             <div className="flex items-center space-x-3 mb-6">
@@ -984,10 +1078,9 @@ const NATPACTravelApp = () => {
     </div>
   );
 
-  // NATPAC Dashboard Component (Enhanced)
   const DashboardScreen = () => (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b border-gray-200 p-4">
+      <div className="bg-white shadow-md border-b border-gray-200 p-4 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -1003,6 +1096,13 @@ const NATPACTravelApp = () => {
             </div>
           </div>
           <div className="flex space-x-3">
+            <button
+              onClick={() => navigateTo("start")}
+              className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+            >
+              <ArrowLeft size={16} />
+              <span>Exit Dashboard</span>
+            </button>
             <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all">
               <Filter size={16} />
               <span>Filters</span>
@@ -1017,20 +1117,19 @@ const NATPACTravelApp = () => {
 
       <div className="p-4 pb-24">
         <div className="max-w-6xl mx-auto">
-          {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[
               {
                 title: "Total Trips",
                 value: "15,847",
-                change: "+12%",
+                change: "+12% MoM",
                 color: "from-blue-500 to-blue-600",
                 icon: MapPin,
               },
               {
                 title: "Active Users",
                 value: "2,341",
-                change: "+8%",
+                change: "+8% MoM",
                 color: "from-green-500 to-green-600",
                 icon: Users,
               },
@@ -1051,7 +1150,7 @@ const NATPACTravelApp = () => {
             ].map((metric, index) => (
               <div
                 key={index}
-                className={`bg-gradient-to-r ${metric.color} text-white p-6 rounded-2xl shadow-lg`}
+                className={`bg-gradient-to-r ${metric.color} text-white p-6 rounded-2xl shadow-xl`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-semibold opacity-90">
@@ -1065,9 +1164,7 @@ const NATPACTravelApp = () => {
             ))}
           </div>
 
-          {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Mode Share */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
               <h3 className="text-xl font-semibold text-gray-800 mb-6">
                 Transportation Mode Share
@@ -1128,7 +1225,6 @@ const NATPACTravelApp = () => {
               </div>
             </div>
 
-            {/* Trip Purpose */}
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
               <h3 className="text-xl font-semibold text-gray-800 mb-6">
                 Trip Purpose Analysis
@@ -1175,7 +1271,6 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          {/* Recent Data Table */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-xl font-semibold text-gray-800 mb-6">
               Live Trip Data Stream
@@ -1283,9 +1378,10 @@ const NATPACTravelApp = () => {
     </div>
   );
 
-  // Render current view
   const renderCurrentView = () => {
     switch (currentView) {
+      case "start":
+        return <StartScreen navigateTo={navigateTo} />;
       case "home":
         return <HomeScreen />;
       case "addTrip":
@@ -1303,33 +1399,20 @@ const NATPACTravelApp = () => {
       case "dashboard":
         return <DashboardScreen />;
       default:
-        return <HomeScreen />;
+        return <StartScreen navigateTo={navigateTo} />;
     }
   };
+
+  const isUserAppView = currentView !== "start" && currentView !== "dashboard";
+  const showBottomNav = isUserAppView && currentView !== "privacy";
 
   return (
     <div className="font-sans bg-gray-50 min-h-screen">
       {renderCurrentView()}
-      <SideMenu />
-
-      {/* Demo Controls */}
-      <div className="fixed top-4 right-4 bg-black bg-opacity-90 text-white p-3 rounded-xl z-50 backdrop-blur-sm">
-        <p className="text-xs mb-2 font-semibold">Demo Controls:</p>
-        <div className="space-x-2">
-          <button
-            onClick={() => navigateTo("home")}
-            className="text-xs bg-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all font-medium"
-          >
-            📱 User App
-          </button>
-          <button
-            onClick={() => navigateTo("dashboard")}
-            className="text-xs bg-green-600 px-3 py-1.5 rounded-lg hover:bg-green-700 transition-all font-medium"
-          >
-            📊 NATPAC Dashboard
-          </button>
-        </div>
-      </div>
+      {isUserAppView && <SideMenu />}
+      {showBottomNav && (
+        <BottomNavBar currentView={currentView} navigateTo={navigateTo} />
+      )}
     </div>
   );
 };
