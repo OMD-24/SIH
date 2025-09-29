@@ -251,7 +251,7 @@ const NATPACTravelApp = () => {
   );
 
   const StartScreen = ({ navigateTo }) => (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-indigo-700 via-blue-800 to-purple-900 text-white">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-indigo-800 via-blue-900 to-purple-900 text-white transition-all duration-1000">
       <div className="text-center mb-12">
         <img
           src="/tripxlogo.png"
@@ -260,7 +260,7 @@ const NATPACTravelApp = () => {
         />
 
         <h1 className="text-4xl font-extrabold mb-2 tracking-tight">
-          TripX :- Travel Made Effortless...
+          TripX: Travel Made Effortless...
         </h1>
         <p className="text-lg font-light opacity-80">
           Kerala's Comprehensive Travel & Planning App
@@ -272,7 +272,7 @@ const NATPACTravelApp = () => {
 
         <button
           onClick={() => navigateTo("home")}
-          className="w-full flex items-center justify-center space-x-3 py-4 px-6 bg-white text-gray-900 rounded-2xl font-bold text-lg shadow-xl transition-all hover:ring-4 hover:ring-blue-300 hover:scale-[1.02]"
+          className="w-full flex items-center justify-center space-x-3 py-4 px-6 bg-white text-gray-900 rounded-2xl font-bold text-lg shadow-2xl transition-all hover:ring-4 hover:ring-blue-300 hover:scale-[1.02]"
         >
           <MapPin size={24} className="text-blue-600" />
           <span>User App (Trip Logging)</span>
@@ -280,7 +280,7 @@ const NATPACTravelApp = () => {
 
         <button
           onClick={() => navigateTo("dashboard")}
-          className="w-full flex items-center justify-center space-x-3 py-4 px-6 bg-green-500 text-white rounded-2xl font-bold text-lg shadow-xl transition-all hover:ring-4 hover:ring-green-300 hover:scale-[1.02]"
+          className="w-full flex items-center justify-center space-x-3 py-4 px-6 bg-green-500 text-white rounded-2xl font-bold text-lg shadow-2xl transition-all hover:ring-4 hover:ring-green-300 hover:scale-[1.02] hover:bg-green-600"
         >
           <BarChart3 size={24} className="text-white" />
           <span>NATPAC Dashboard</span>
@@ -298,7 +298,7 @@ const NATPACTravelApp = () => {
       <Header title="" showBack={false} />
       <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-3xl p-6 mb-6 shadow-xl border-t-4 border-blue-500">
+          <div className="bg-white rounded-3xl p-6 mb-6 shadow-xl border-t-4 border-blue-500 transition-all hover:shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -315,14 +315,14 @@ const NATPACTravelApp = () => {
               </div>
               <button
                 onClick={() => navigateTo("settings")}
-                className="p-2 bg-gray-50 rounded-full hover:bg-gray-100"
+                className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-all"
               >
                 <Settings size={20} className="text-gray-600" />
               </button>
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 mb-6 shadow-xl border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 mb-6 shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-gray-800">
                 Trip Tracking
@@ -336,7 +336,7 @@ const NATPACTravelApp = () => {
 
             <button
               onClick={() => setIsTracking(!isTracking)}
-              className={`w-full py-4 px-6 rounded-2xl font-bold text-white transition-all transform hover:shadow-lg ${
+              className={`w-full py-4 px-6 rounded-2xl font-bold text-white transition-all transform hover:shadow-lg hover:scale-[1.01] ${
                 isTracking
                   ? "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
                   : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
@@ -351,7 +351,7 @@ const NATPACTravelApp = () => {
             </button>
 
             {isTracking && (
-              <div className="mt-4 p-4 bg-green-50 rounded-2xl border border-green-200">
+              <div className="mt-4 p-4 bg-green-50 rounded-2xl border border-green-200 shadow-inner">
                 <p className="text-green-800 font-medium flex items-center space-x-2">
                   <Clock size={18} /> <span>Live Tracking Active...</span>
                 </p>
@@ -396,7 +396,7 @@ const NATPACTravelApp = () => {
                 className="bg-white p-5 rounded-3xl shadow-lg hover:shadow-xl transition-all transform hover:translate-y-[-2px] border border-gray-100 text-left"
               >
                 <div
-                  className={`w-10 h-10 ${action.iconBg} rounded-xl flex items-center justify-center mb-3`}
+                  className={`w-10 h-10 ${action.iconBg} rounded-xl flex items-center justify-center mb-3 transition-all`}
                 >
                   <action.icon size={20} />
                 </div>
@@ -408,7 +408,7 @@ const NATPACTravelApp = () => {
           </div>
 
           {trips.length > 0 && (
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100">
+            <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 Recent Activity
               </h3>
@@ -416,7 +416,7 @@ const NATPACTravelApp = () => {
                 {trips.slice(0, 2).map((trip, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors"
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors cursor-pointer"
                   >
                     <div>
                       <p className="font-semibold text-gray-800">
@@ -437,7 +437,7 @@ const NATPACTravelApp = () => {
               </div>
               <button
                 onClick={() => navigateTo("trips")}
-                className="w-full mt-4 py-2 text-blue-600 font-semibold border-t border-gray-100 pt-4 hover:text-blue-700"
+                className="w-full mt-4 py-2 text-blue-600 font-semibold border-t border-gray-100 pt-4 hover:text-blue-700 transition-colors"
               >
                 View All Trips
               </button>
@@ -454,8 +454,8 @@ const NATPACTravelApp = () => {
 
       <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
-            <div className="bg-gradient-to-br from-blue-100 to-indigo-200 rounded-2xl h-48 mb-6 flex items-center justify-center relative overflow-hidden">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100">
+            <div className="bg-gradient-to-br from-blue-100 to-indigo-200 rounded-2xl h-48 mb-6 flex items-center justify-center relative overflow-hidden shadow-inner">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"></div>
               <div className="relative z-10 text-center">
                 <MapPin className="w-12 h-12 text-blue-600 mx-auto mb-2" />
@@ -473,7 +473,7 @@ const NATPACTravelApp = () => {
                   <input
                     type="text"
                     value="Home, Kochi"
-                    className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm"
+                    className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:bg-white focus:ring-blue-500 focus:border-blue-500 transition-all"
                     readOnly
                   />
                 </div>
@@ -484,7 +484,7 @@ const NATPACTravelApp = () => {
                   <input
                     type="text"
                     value="Office, Ernakulam"
-                    className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm"
+                    className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:bg-white focus:ring-blue-500 focus:border-blue-500 transition-all"
                     readOnly
                   />
                 </div>
@@ -494,7 +494,7 @@ const NATPACTravelApp = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Mode of Transport
                 </label>
-                <select className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                   <option value="PT_BUS">🚌 Bus</option>
                   <option value="PT_TRAIN">🚊 Train</option>
                   <option value="CAR">🚗 Car</option>
@@ -508,7 +508,7 @@ const NATPACTravelApp = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Trip Purpose
                 </label>
-                <select className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                   <option value="WORK">💼 Work</option>
                   <option value="HOME">🏠 Home</option>
                   <option value="EDUCATION">📚 Education</option>
@@ -527,7 +527,7 @@ const NATPACTravelApp = () => {
                   <input
                     type="number"
                     defaultValue="1"
-                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   />
                 </div>
                 <div>
@@ -537,14 +537,14 @@ const NATPACTravelApp = () => {
                   <input
                     type="number"
                     defaultValue="15"
-                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Frequency
                   </label>
-                  <select className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <select className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     <option value="DAILY">Daily</option>
                     <option value="WEEKLY">Weekly</option>
                     <option value="MONTHLY">Monthly</option>
@@ -557,13 +557,13 @@ const NATPACTravelApp = () => {
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={goBack}
-                className="flex-1 py-3 px-6 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all"
+                className="flex-1 py-3 px-6 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all transform hover:scale-[1.01]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => navigateTo("home")}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all"
+                className="flex-1 py-3 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:scale-[1.01]"
               >
                 Confirm Trip
               </button>
@@ -579,7 +579,7 @@ const NATPACTravelApp = () => {
       <Header title="Find Route" />
       <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 mb-6">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 mb-6">
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -593,7 +593,7 @@ const NATPACTravelApp = () => {
                   <input
                     type="text"
                     placeholder="Enter starting location"
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
@@ -609,13 +609,13 @@ const NATPACTravelApp = () => {
                   <input
                     type="text"
                     placeholder="Enter destination"
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
             </div>
 
-            <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all">
+            <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:scale-[1.01]">
               <Search className="inline mr-2" size={20} />
               Find Routes
             </button>
@@ -653,12 +653,12 @@ const NATPACTravelApp = () => {
             ].map((route, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100"
+                className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 transition-all hover:shadow-xl cursor-pointer"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`w-10 h-10 rounded-full bg-gradient-to-r ${route.color} flex items-center justify-center`}
+                      className={`w-10 h-10 rounded-full bg-gradient-to-r ${route.color} flex items-center justify-center shadow-md`}
                     >
                       <span className="text-white font-bold text-lg">
                         {index + 1}
@@ -706,18 +706,18 @@ const NATPACTravelApp = () => {
 
       <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 mb-6">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 mb-6 transition-all hover:shadow-2xl">
             <h3 className="text-xl font-semibold text-gray-800 mb-6">
               What would you like to book?
             </h3>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <button className="p-6 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl text-center hover:from-blue-100 hover:to-indigo-200 transition-all transform hover:scale-105 border border-blue-200">
+              <button className="p-6 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl text-center hover:from-blue-100 hover:to-indigo-200 transition-all transform hover:scale-[1.03] border border-blue-200 shadow-md">
                 <Car className="w-10 h-10 text-blue-600 mx-auto mb-3" />
                 <p className="font-semibold text-gray-800">Transport</p>
                 <p className="text-gray-600 text-sm mt-1">Bus, Train, Taxi</p>
               </button>
-              <button className="p-6 bg-gradient-to-br from-purple-50 to-pink-100 rounded-2xl text-center hover:from-purple-100 hover:to-pink-200 transition-all transform hover:scale-105 border border-purple-200">
+              <button className="p-6 bg-gradient-to-br from-purple-50 to-pink-100 rounded-2xl text-center hover:from-purple-100 hover:to-pink-200 transition-all transform hover:scale-[1.03] border border-purple-200 shadow-md">
                 <Hotel className="w-10 h-10 text-purple-600 mx-auto mb-3" />
                 <p className="font-semibold text-gray-800">Hotels</p>
                 <p className="text-gray-600 text-sm mt-1">
@@ -727,7 +727,7 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Popular Bookings
             </h3>
@@ -764,7 +764,7 @@ const NATPACTravelApp = () => {
               ].map((booking, index) => (
                 <div
                   key={index}
-                  className="p-4 border border-gray-200 rounded-2xl hover:shadow-md transition-all"
+                  className="p-4 border border-gray-200 rounded-2xl hover:shadow-md transition-all cursor-pointer bg-gray-50 hover:bg-gray-100"
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-4">
@@ -791,7 +791,7 @@ const NATPACTravelApp = () => {
                       <p className="font-bold text-lg text-gray-800">
                         {booking.price}
                       </p>
-                      <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-all">
+                      <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-all transform hover:scale-[1.05]">
                         Book Now
                       </button>
                     </div>
@@ -811,7 +811,7 @@ const NATPACTravelApp = () => {
 
       <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 mb-6">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 mb-6 transition-all hover:shadow-2xl">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               This Month
             </h3>
@@ -837,7 +837,7 @@ const NATPACTravelApp = () => {
             {trips.map((trip, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100"
+                className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 transition-all hover:shadow-xl cursor-pointer"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1">
@@ -889,7 +889,7 @@ const NATPACTravelApp = () => {
 
       <div className="p-4 pb-28">
         <div className="max-w-md mx-auto space-y-4">
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Profile
             </h3>
@@ -904,7 +904,7 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Privacy & Data
             </h3>
@@ -939,7 +939,7 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               App Settings
             </h3>
@@ -955,13 +955,13 @@ const NATPACTravelApp = () => {
                     {setting.label}
                   </span>
                   <div
-                    className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                      setting.enabled ? "bg-blue-500" : "bg-gray-300"
-                    }`}
+                    className={`w-12 h-6 rounded-full p-1 transition-colors`}
                   >
                     <div
                       className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                        setting.enabled ? "translate-x-6" : ""
+                        setting.enabled
+                          ? "translate-x-6 bg-blue-500"
+                          : "bg-gray-300"
                       }`}
                     ></div>
                   </div>
@@ -970,7 +970,7 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 transition-all hover:shadow-2xl">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Support
             </h3>
@@ -1012,7 +1012,7 @@ const NATPACTravelApp = () => {
 
       <div className="p-4 pb-28">
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-3xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100">
             <div className="flex items-center space-x-3 mb-6">
               <Shield className="w-8 h-8 text-blue-500" />
               <h2 className="text-xl font-bold text-gray-800">
@@ -1067,7 +1067,7 @@ const NATPACTravelApp = () => {
 
               <button
                 onClick={goBack}
-                className="w-full py-3 px-6 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600 transition-all"
+                className="w-full py-3 px-6 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600 transition-all transform hover:scale-[1.01]"
               >
                 I Understand
               </button>
@@ -1083,7 +1083,7 @@ const NATPACTravelApp = () => {
       <div className="bg-white shadow-md border-b border-gray-200 p-4 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
               <BarChart3 className="text-white" size={20} />
             </div>
             <div>
@@ -1098,16 +1098,16 @@ const NATPACTravelApp = () => {
           <div className="flex space-x-3">
             <button
               onClick={() => navigateTo("start")}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+              className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all transform hover:scale-[1.05]"
             >
               <ArrowLeft size={16} />
               <span>Exit Dashboard</span>
             </button>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all">
+            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all transform hover:scale-[1.05]">
               <Filter size={16} />
               <span>Filters</span>
             </button>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all">
+            <button className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all transform hover:scale-[1.05]">
               <Download size={16} />
               <span>Export</span>
             </button>
@@ -1150,7 +1150,7 @@ const NATPACTravelApp = () => {
             ].map((metric, index) => (
               <div
                 key={index}
-                className={`bg-gradient-to-r ${metric.color} text-white p-6 rounded-2xl shadow-xl`}
+                className={`bg-gradient-to-r ${metric.color} text-white p-6 rounded-2xl shadow-xl transition-all hover:shadow-2xl`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-semibold opacity-90">
@@ -1165,7 +1165,7 @@ const NATPACTravelApp = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
               <h3 className="text-xl font-semibold text-gray-800 mb-6">
                 Transportation Mode Share
               </h3>
@@ -1225,7 +1225,7 @@ const NATPACTravelApp = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
               <h3 className="text-xl font-semibold text-gray-800 mb-6">
                 Trip Purpose Analysis
               </h3>
@@ -1271,7 +1271,7 @@ const NATPACTravelApp = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
             <h3 className="text-xl font-semibold text-gray-800 mb-6">
               Live Trip Data Stream
             </h3>
